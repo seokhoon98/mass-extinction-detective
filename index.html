@@ -505,8 +505,8 @@
                 <h3 class="text-xl font-bold text-gray-800">📈 대멸종의 역설: 생물다양성 성장의 방아쇠</h3>
                 <p class="text-sm text-gray-600">지질 시대 동안 해양 생물의 과(Family) 수 변화 그래프를 분석하고 대멸종 이후의 진화 법칙을 알아보세요.</p>
                 
-                <div class="bg-white p-4 border border-gray-200 rounded-xl">
-                    <canvas id="biodiversityChart" class="max-h-[320px] w-full"></canvas>
+                <div class="bg-white p-4 border border-gray-200 rounded-xl" style="height: 400px;">
+                    <canvas id="biodiversityChart" class="w-full h-full"></canvas>
                 </div>
 
                 <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-200 mt-4 text-sm space-y-2">
@@ -951,9 +951,88 @@
 
         // 4단계 Plotly 스타일의 Chart.js 렌더링 (Syntax 에러 수정)
         let chartInstance = null;
+
+        // 실제 셉코스키(Sepkoski) 해양생물 과(Family) 다양성 곡선을 참고한 근사 데이터
+        // x = 시간(억 년 전), y = 해양생물 과의 수
+        const biodiversityCurve = [
+            { x: 5.39, y: 0 },   { x: 5.20, y: 60 },  { x: 5.00, y: 120 }, { x: 4.85, y: 160 },
+            { x: 4.60, y: 280 }, { x: 4.50, y: 380 }, { x: 4.43, y: 300 }, // 1차: 오르도비스기 말
+            { x: 4.30, y: 350 }, { x: 4.00, y: 380 }, { x: 3.75, y: 400 }, { x: 3.72, y: 300 }, // 2차: 데본기 후기
+            { x: 3.50, y: 360 }, { x: 3.20, y: 420 }, { x: 3.00, y: 450 }, { x: 2.70, y: 480 },
+            { x: 2.60, y: 500 }, { x: 2.52, y: 180 }, // 3차: 페름기 말 (사상 최대)
+            { x: 2.40, y: 220 }, { x: 2.30, y: 250 }, { x: 2.15, y: 240 }, { x: 2.01, y: 230 }, // 4차: 트라이아스기 말
+            { x: 1.90, y: 280 }, { x: 1.75, y: 340 }, { x: 1.45, y: 480 }, { x: 1.20, y: 560 },
+            { x: 1.00, y: 650 }, { x: 0.80, y: 600 }, { x: 0.66, y: 600 }, // 5차: 백악기 말 (K-Pg)
+            { x: 0.60, y: 480 }, { x: 0.50, y: 550 }, { x: 0.35, y: 650 }, { x: 0.20, y: 780 },
+            { x: 0.10, y: 870 }, { x: 0.00, y: 930 }
+        ];
+
+        const massExtinctions = [
+            { x: 4.43, y: 300, label: '1차 대멸종 (오르도비스기 말, 약 4.43억 년 전)' },
+            { x: 3.72, y: 300, label: '2차 대멸종 (데본기 후기, 약 3.72억 년 전)' },
+            { x: 2.52, y: 180, label: '3차 대멸종 (페름기 말, 약 2.52억 년 전) — 역대 최대 규모' },
+            { x: 2.01, y: 230, label: '4차 대멸종 (트라이아스기 말, 약 2.01억 년 전)' },
+            { x: 0.66, y: 600, label: '5차 대멸종 (백악기 말 K-Pg, 약 6600만 년 전)' }
+        ];
+
+        // 고생대/중생대/신생대 구간 표시 및 시대 경계선을 그려주는 커스텀 플러그인
+        const eraBandPlugin = {
+            id: 'eraBands',
+            afterDraw(chart) {
+                const { ctx, chartArea, scales: { x, y } } = chart;
+                if (!chartArea) return;
+
+                // 시대 경계 점선
+                ctx.save();
+                ctx.setLineDash([4, 4]);
+                ctx.strokeStyle = '#94a3b8';
+                ctx.lineWidth = 1;
+                [2.52, 0.66].forEach(v => {
+                    const px = x.getPixelForValue(v);
+                    ctx.beginPath();
+                    ctx.moveTo(px, chartArea.top);
+                    ctx.lineTo(px, chartArea.bottom);
+                    ctx.stroke();
+                });
+                ctx.restore();
+
+                // 하단 지질시대 구간 바
+                const bandTop = chart.height - 26;
+                const bandBottom = chart.height - 10;
+                const segments = [
+                    { name: '고생대', from: 5.39, to: 2.52 },
+                    { name: '중생대', from: 2.52, to: 0.66 },
+                    { name: '신생대', from: 0.66, to: 0 }
+                ];
+                ctx.save();
+                ctx.strokeStyle = '#475569';
+                ctx.fillStyle = '#334155';
+                ctx.font = 'bold 11px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.lineWidth = 1;
+                segments.forEach(seg => {
+                    const xFrom = x.getPixelForValue(seg.from);
+                    const xTo = x.getPixelForValue(seg.to);
+                    ctx.beginPath();
+                    ctx.moveTo(xFrom, bandTop);
+                    ctx.lineTo(xTo, bandTop);
+                    ctx.stroke();
+                    [xFrom, xTo].forEach(px => {
+                        ctx.beginPath();
+                        ctx.moveTo(px, bandTop - 4);
+                        ctx.lineTo(px, bandTop + 4);
+                        ctx.stroke();
+                    });
+                    ctx.fillText(seg.name, (xFrom + xTo) / 2, bandBottom);
+                });
+                ctx.restore();
+            }
+        };
+
         function renderChart() {
             const ctx = document.getElementById('biodiversityChart').getContext('2d');
-            
+
             if (chartInstance !== null) {
                 return; // 이미 생성된 차트가 있으면 중복 생성 차단
             }
@@ -961,33 +1040,85 @@
             chartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['5.39억년전', '4.85억년전', '4.43억년전(1차멸종)', '4.19억년전', '3.59억년전(2차)', '2.99억년전', '2.52억년전(3차-페름기)', '2.01억년전(4차)', '1.45억년전', '6600만년전(5차-백악기)', '현재'],
-                    datasets: [{
-                        label: '해양 생물 과(Family)의 수',
-                        data: [180, 280, 260, 350, 210, 380, 160, 320, 420, 300, 850],
-                        borderColor: '#2563EB',
-                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.2,
-                        pointBackgroundColor: '#1E3A8A',
-                        pointRadius: 6
-                    }]
+                    datasets: [
+                        {
+                            label: '해양생물 과의 수',
+                            data: biodiversityCurve,
+                            borderColor: '#f97316',
+                            backgroundColor: 'rgba(249, 115, 22, 0.08)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.25,
+                            pointRadius: 0,
+                            pointHoverRadius: 4,
+                            order: 2
+                        },
+                        {
+                            label: '대멸종 시기',
+                            data: massExtinctions,
+                            showLine: false,
+                            pointStyle: 'circle',
+                            pointRadius: 6,
+                            pointHoverRadius: 8,
+                            backgroundColor: '#3b82f6',
+                            borderColor: '#1d4ed8',
+                            borderWidth: 1.5,
+                            order: 1
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    layout: { padding: { bottom: 34, right: 12 } },
+                    interaction: { mode: 'nearest', intersect: true },
                     plugins: {
-                        legend: { position: 'top' },
-                        tooltip: { enabled: true }
+                        legend: {
+                            position: 'top',
+                            align: 'start',
+                            labels: { usePointStyle: true, pointStyle: 'circle' }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title(items) {
+                                    const p = items[0].raw;
+                                    return `${p.x.toFixed(2)}억 년 전`;
+                                },
+                                label(item) {
+                                    if (item.datasetIndex === 1) {
+                                        return massExtinctions.find(e => e.x === item.raw.x)?.label || '대멸종';
+                                    }
+                                    return `해양생물 과의 수: 약 ${item.raw.y}개`;
+                                }
+                            }
+                        }
                     },
                     scales: {
+                        x: {
+                            type: 'linear',
+                            reverse: true,
+                            min: 0,
+                            max: 5.6,
+                            afterBuildTicks: (axis) => {
+                                axis.ticks = [5.39, 2.52, 0.66, 0].map(v => ({ value: v }));
+                            },
+                            ticks: {
+                                font: { weight: 'bold' },
+                                callback: (val) => (val === 0 ? '현재' : val + '억')
+                            },
+                            grid: { color: '#e5e7eb' },
+                            title: { display: true, text: '시간(억 년 전)', font: { weight: 'bold' } }
+                        },
                         y: {
-                            beginAtZero: true,
-                            title: { display: true, text: '생물 과(Family)의 개수', font: { weight: 'bold' } }
+                            min: 0,
+                            max: 1000,
+                            ticks: { stepSize: 300 },
+                            grid: { color: '#f1f5f9' },
+                            title: { display: true, text: '해양생물 과의 수', font: { weight: 'bold' } }
                         }
                     }
-                }
+                },
+                plugins: [eraBandPlugin]
             });
         }
 
