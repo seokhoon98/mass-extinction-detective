@@ -203,7 +203,7 @@
                         <button type="button" onclick="closeScene(1)" class="text-xs text-gray-400 hover:text-gray-600 font-semibold">✕ 지도로 돌아가기</button>
                     </div>
                     <p class="text-xs text-gray-500">K-Pg 경계면 지층 시료 채취 현장입니다. 반짝이는 아이콘을 클릭해 주변을 살펴보고 증거를 채집하세요.</p>
-                    <div class="relative w-full aspect-[3/2] rounded-lg overflow-hidden border border-amber-200 bg-gray-200">
+                    <div class="relative w-full aspect-[3/2] rounded-lg overflow-hidden border border-amber-200 bg-gray-200" onclick="trackClick(1, event)">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Cenote_Ik_Kil_11.jpg" alt="유카탄 세노테 실제 사진" class="absolute inset-0 w-full h-full object-cover" loading="lazy">
                         <div class="absolute inset-0 bg-black/10"></div>
                         <button type="button" onclick="openLightbox(1)" class="absolute top-2 right-2 z-20 bg-black/55 hover:bg-black/70 text-white text-[10px] font-bold px-2 py-1 rounded-full">🔍 사진 크게 보기</button>
@@ -229,8 +229,12 @@
                         </ol>
                         <button type="button" id="hint-btn-1" onclick="revealHints(1)" class="shrink-0 bg-amber-400 hover:bg-amber-300 text-amber-950 text-[11px] font-bold px-3 py-1.5 rounded-full transition">💡 힌트 버튼</button>
                     </div>
-                    <span id="hotspot-counter-1" class="block text-xs font-bold text-blue-700">0/3 단서 발견</span>
+                    <div class="flex items-center justify-between">
+                        <span id="hotspot-counter-1" class="text-xs font-bold text-blue-700">0/3 단서 발견</span>
+                        <span id="click-stats-1" class="text-xs font-semibold text-gray-400">🖱️ 클릭 0회 · 명중률 100%</span>
+                    </div>
                     <div id="hotspot-popup-1" class="hidden text-xs bg-blue-50 border border-blue-200 p-3 rounded-lg text-blue-900"></div>
+                    <div id="evidence-gallery-1" class="flex flex-wrap gap-2"></div>
                     <div id="data-result-1" class="hidden mt-1 text-xs bg-white border border-gray-100 p-3 rounded-lg text-gray-700 leading-relaxed">
                         <strong>[스펙트럼 및 현미경 관찰 보고서]</strong><br>
                         • 극단적인 이리듐(Ir) 함량 검출 (우주 기원 물질 대비 고농도)<br>
@@ -246,7 +250,7 @@
                         <button type="button" onclick="closeScene(2)" class="text-xs text-gray-400 hover:text-gray-600 font-semibold">✕ 지도로 돌아가기</button>
                     </div>
                     <p class="text-xs text-gray-500">고생대 페름기 말 거대 용암대지 시추 현장입니다. 반짝이는 아이콘을 클릭해 증거를 채집하세요.</p>
-                    <div class="relative w-full aspect-[4/3] rounded-lg overflow-hidden border border-orange-200 bg-gray-200">
+                    <div class="relative w-full aspect-[4/3] rounded-lg overflow-hidden border border-orange-200 bg-gray-200" onclick="trackClick(2, event)">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/8/81/Columnar_Basalt_at_Cape_Stolbchaty_on_Kunashir_Island_2011.jpg" alt="현무암 주상절리 실제 사진" class="absolute inset-0 w-full h-full object-cover" loading="lazy">
                         <div class="absolute inset-0 bg-black/10"></div>
                         <button type="button" onclick="openLightbox(2)" class="absolute top-2 right-2 z-20 bg-black/55 hover:bg-black/70 text-white text-[10px] font-bold px-2 py-1 rounded-full">🔍 사진 크게 보기</button>
@@ -272,8 +276,12 @@
                         </ol>
                         <button type="button" id="hint-btn-2" onclick="revealHints(2)" class="shrink-0 bg-amber-400 hover:bg-amber-300 text-amber-950 text-[11px] font-bold px-3 py-1.5 rounded-full transition">💡 힌트 버튼</button>
                     </div>
-                    <span id="hotspot-counter-2" class="block text-xs font-bold text-blue-700">0/3 단서 발견</span>
+                    <div class="flex items-center justify-between">
+                        <span id="hotspot-counter-2" class="text-xs font-bold text-blue-700">0/3 단서 발견</span>
+                        <span id="click-stats-2" class="text-xs font-semibold text-gray-400">🖱️ 클릭 0회 · 명중률 100%</span>
+                    </div>
                     <div id="hotspot-popup-2" class="hidden text-xs bg-blue-50 border border-blue-200 p-3 rounded-lg text-blue-900"></div>
+                    <div id="evidence-gallery-2" class="flex flex-wrap gap-2"></div>
                     <div id="data-result-2" class="hidden mt-1 text-xs bg-white border border-gray-100 p-3 rounded-lg text-gray-700 leading-relaxed">
                         <strong>[가스 성분 크로마토그래피 분석 보고서]</strong><br>
                         • 축구장 2억 개 면적의 거대한 고철질 분출 용암층 확인<br>
@@ -289,7 +297,7 @@
                         <button type="button" onclick="closeScene(3)" class="text-xs text-gray-400 hover:text-gray-600 font-semibold">✕ 지도로 돌아가기</button>
                     </div>
                     <p class="text-xs text-gray-500">고생대 말기 천해성 퇴적물 및 화석 분석 현장입니다. 반짝이는 아이콘을 클릭해 증거를 채집하세요.</p>
-                    <div class="relative w-full aspect-[3/2] rounded-lg overflow-hidden border border-cyan-200 bg-gray-200">
+                    <div class="relative w-full aspect-[3/2] rounded-lg overflow-hidden border border-cyan-200 bg-gray-200" onclick="trackClick(3, event)">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Hunstanton_Cliffs.jpg" alt="퇴적암 지층 실제 사진" class="absolute inset-0 w-full h-full object-cover" loading="lazy">
                         <div class="absolute inset-0 bg-black/10"></div>
                         <button type="button" onclick="openLightbox(3)" class="absolute top-2 right-2 z-20 bg-black/55 hover:bg-black/70 text-white text-[10px] font-bold px-2 py-1 rounded-full">🔍 사진 크게 보기</button>
@@ -315,8 +323,12 @@
                         </ol>
                         <button type="button" id="hint-btn-3" onclick="revealHints(3)" class="shrink-0 bg-amber-400 hover:bg-amber-300 text-amber-950 text-[11px] font-bold px-3 py-1.5 rounded-full transition">💡 힌트 버튼</button>
                     </div>
-                    <span id="hotspot-counter-3" class="block text-xs font-bold text-blue-700">0/3 단서 발견</span>
+                    <div class="flex items-center justify-between">
+                        <span id="hotspot-counter-3" class="text-xs font-bold text-blue-700">0/3 단서 발견</span>
+                        <span id="click-stats-3" class="text-xs font-semibold text-gray-400">🖱️ 클릭 0회 · 명중률 100%</span>
+                    </div>
                     <div id="hotspot-popup-3" class="hidden text-xs bg-blue-50 border border-blue-200 p-3 rounded-lg text-blue-900"></div>
+                    <div id="evidence-gallery-3" class="flex flex-wrap gap-2"></div>
                     <div id="data-result-3" class="hidden mt-1 text-xs bg-white border border-gray-100 p-3 rounded-lg text-gray-700 leading-relaxed">
                         <strong>[고생태 환경 지질학 종합 보고서]</strong><br>
                         • 전 지구적 해수면 급감 및 얕은 바다 화석 생태계 붕괴 연동<br>
@@ -751,6 +763,26 @@
             if (btn) { btn.disabled = true; btn.innerText = '💡 힌트 활성화됨'; btn.classList.add('opacity-50'); }
         }
 
+        // 클릭 정확도 측정: 사진 위 어디를 클릭하든 집계하고, 증거 위치를 클릭했을 때만 "명중"으로 처리
+        const siteClickStats = { 1: { clicks: 0, hits: 0 }, 2: { clicks: 0, hits: 0 }, 3: { clicks: 0, hits: 0 } };
+        function registerClickStat(siteId, isHit) {
+            const stats = siteClickStats[siteId];
+            stats.clicks++;
+            if (isHit) stats.hits++;
+            const accuracy = stats.clicks > 0 ? Math.round((stats.hits / stats.clicks) * 100) : 100;
+            const el = document.getElementById('click-stats-' + siteId);
+            if (el) el.innerText = `🖱️ 클릭 ${stats.clicks}회 · 명중률 ${accuracy}%`;
+        }
+        function trackClick(siteId, event) {
+            const target = event.target;
+            // 핫스팟(증거) 클릭은 investigateHotspot에서 직접 집계한다.
+            // (버튼을 disabled 처리하는 도중에는 이벤트 버블링이 중간에 끊기는 브라우저 동작 때문)
+            if (target.closest('.hotspot-btn')) return;
+            if (target.tagName === 'IMG') {
+                registerClickStat(siteId, false);
+            }
+        }
+
         // 2.0 미션 시작하기
         function startMission() {
             document.getElementById('mission-start-panel').classList.add('hidden');
@@ -805,6 +837,7 @@
         function investigateHotspot(siteId, idx, btnEl) {
             if (hotspotsFound[siteId][idx]) return;
             hotspotsFound[siteId][idx] = true;
+            registerClickStat(siteId, true);
 
             btnEl.classList.remove('hotspot-btn');
             const ping = btnEl.querySelector('.hint-ping');
@@ -821,6 +854,16 @@
 
             const seekLi = document.getElementById(`seek-hint-${siteId}-${idx}`);
             if (seekLi) { seekLi.classList.add('line-through', 'text-emerald-600'); }
+
+            // 발견한 위치를 확대한 듯한 미니 증거 카드를 갤러리에 추가
+            const thumb = document.createElement('div');
+            thumb.className = "w-16 h-16 rounded-lg border-2 border-white shadow-md overflow-hidden shrink-0 bg-gray-300 transition-transform hover:scale-110 hover:z-10";
+            thumb.style.backgroundImage = `url('${siteImages[siteId].src}')`;
+            thumb.style.backgroundSize = '280%';
+            thumb.style.backgroundPosition = `${btnEl.style.left} ${btnEl.style.top}`;
+            thumb.style.transform = `rotate(${idx % 2 === 0 ? -4 : 4}deg)`;
+            thumb.title = info.title;
+            document.getElementById('evidence-gallery-' + siteId).appendChild(thumb);
 
             openLightbox(siteId, `<span class="block text-base font-bold mb-1">🔎 ${info.title}</span><span class="block text-xs leading-relaxed">${info.detail}</span>`);
 
